@@ -1,0 +1,63 @@
+*&---------------------------------------------------------------------*
+*& Report  ZTESTARAB
+*&
+*&---------------------------------------------------------------------*
+*&@Author: LUIS LAURITO - +55 (11) 996-852-658
+*&
+*&---------------------------------------------------------------------*
+
+REPORT  ZTESTARAB.
+
+*Data Declaration
+DATA: lv_output TYPE tline-tdline.
+DATA: lv_choice TYPE c.
+
+*Parameters
+PARAMETER: lv_num TYPE itcdp-tdlcount.
+
+*Function Module
+CALL FUNCTION 'POPUP_TO_CONFIRM'
+  EXPORTING
+    TEXT_QUESTION              = 'Qual é a conversão deseja?'
+   TEXT_BUTTON_1               = 'Arábico --> Romano'(001)
+   ICON_BUTTON_1               = ' '
+   TEXT_BUTTON_2               = 'Romano  --> Arábico'(002)
+   ICON_BUTTON_2               = ' '
+ IMPORTING
+   ANSWER                      = lv_choice
+ EXCEPTIONS
+   TEXT_NOT_FOUND              = 1
+   OTHERS                      = 2.
+
+*Conditions
+IF lv_choice EQ '1' .
+
+* Arabic to Roman
+  CALL FUNCTION 'CONVERT_NUMBER'
+  EXPORTING
+    TDLCOUNT         = lv_num
+    TDNUMFIXC        = '00'
+    TDNUMBERIN       = 'ROMAN'
+    TDUPPER          = '0'
+    TDNUMOUTL        = '00'
+ IMPORTING
+   STRING           = lv_output.
+
+*Output
+WRITE lv_output.
+
+ELSE.
+* Roman to Arabic
+  CALL FUNCTION 'CONVERT_NUMBER'
+  EXPORTING
+    TDLCOUNT         = lv_num
+    TDNUMFIXC        = '00'
+    TDNUMBERIN       = 'ARABIC'
+    TDUPPER          = '0'
+    TDNUMOUTL        = '00'
+ IMPORTING
+   STRING           = lv_output.
+
+*Output
+WRITE lv_output.
+ENDIF.
